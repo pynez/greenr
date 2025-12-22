@@ -4,10 +4,22 @@ from .validation import validate_and_collect_warnings
 from .models import CalculateRequest, CalculateResponse, Breakdown, Warning
 from .calc import calculate_annual_kg
 from .factors import CALCULATION_VERSION
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Greenr API",
     version=CALCULATION_VERSION,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/health")
