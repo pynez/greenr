@@ -134,3 +134,36 @@ diet_kg +
 consumption_kg
 
 total_metric_tons = total_kg ÷ 1000
+
+## Quick Estimate Mode
+
+When Quick Estimate mode is selected, Greenr applies national-average defaults
+for any missing inputs. These defaults are intended to provide a realistic
+order-of-magnitude estimate while minimizing user effort.
+
+Defaults include:
+
+- Electricity: 900 kWh per month
+- Natural gas heating: 30 therms per month
+- Vehicle travel: 12,000 miles per year (gasoline vehicle)
+- Flights: 1 short-haul round trip per year
+- Diet: low-meat omnivore
+- Consumption: average
+- Waste: no assumed recycling or composting
+
+User-provided values always override defaults.
+
+## Input Validation and Warnings
+
+Greenr prioritizes usability over strict validation. Inputs are not rejected
+unless structurally invalid.
+
+When values are missing, unusually high, or require assumptions, Greenr
+returns warnings alongside results. These warnings explain:
+
+- When national averages were used
+- When values are unusually high or low
+- When reductions or modifiers were capped
+
+Warnings do not affect calculations directly, but help users understand
+uncertainty and improve future estimates.

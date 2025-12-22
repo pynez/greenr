@@ -69,6 +69,12 @@ class Breakdown(BaseModel):
     total_kg: float
     total_metric_tons: float
 
+class Warning(BaseModel):
+    code: str
+    message: str
+    field: str | None = None
+
 class CalculateResponse(BaseModel):
     calculation_version: str
     breakdown: Breakdown
+    warnings: list[Warning] = Field(default_factory=list)

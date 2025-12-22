@@ -1,5 +1,7 @@
 from fastapi import FastAPI
-from .models import CalculateRequest, CalculateResponse, Breakdown
+from .quick_defaults import apply_quick_mode_defaults
+from .validation import validate_and_collect_warnings
+from .models import CalculateRequest, CalculateResponse, Breakdown, Warning
 from .calc import calculate_annual_kg
 from .factors import CALCULATION_VERSION
 
@@ -14,6 +16,20 @@ def health():
 
 @app.post("/calculate", response_model=CalculateResponse)
 def calculate(req: CalculateRequest):
+    warnings = []
+
+    if req.mode == "quick":
+        req = apply_quick_mode_defaults(req)
+        warnings.append(
+            Warning(
+                code="QUICK_MODE",
+                field=None,
+                message="Quick Estimate mode uses national-average defaults where data is missing."
+            )
+        )
+
+    warnings.extend(validate_and_collect_warnings(req))
+
     result = calculate_annual_kg(req)
 
     breakdown = Breakdown(
@@ -26,7 +42,9 @@ def calculate(req: CalculateRequest):
         total_kg=result["total_kg"],
         total_metric_tons=result["total_metric_tons"],
     )
+
     return CalculateResponse(
         calculation_version=result["calculation_version"],
         breakdown=breakdown,
+        warnings=warnings,
     )
