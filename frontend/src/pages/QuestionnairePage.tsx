@@ -79,7 +79,7 @@ export default function QuestionnairePage() {
           <div>
             <h1 className="text-2xl font-semibold">Quick Estimate</h1>
             <p className="mt-2 text-white/70">
-              Answer a few questions. We’ll fill gaps with national averages and show warnings so it stays transparent.
+              Answer a few questions. We’ll fill gaps with national averages and show how we calculated your footprint.
             </p>
           </div>
           <Link to="/start" className="text-sm text-white/70 hover:text-white">
@@ -218,7 +218,7 @@ function QuickQuestionnaireBody({
           className="mt-3 w-full"
         />
         <div className="mt-2 text-xs text-white/55">
-          If you’re not sure, leave it at 0. You’ll get a warning and we’ll use a default.
+          If you’re not sure, leave it at 0. We can guestimate.
         </div>
       </Section>
 
