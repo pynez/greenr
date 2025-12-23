@@ -211,9 +211,6 @@ export default function ScenarioBuilderPage() {
                 );
               })}
             </div>
-            <div className="mt-2 text-xs text-white/55">
-              MVP treats these as short-haul for quick comparisons.
-            </div>
           </Section>
 
           <Section title="Diet">

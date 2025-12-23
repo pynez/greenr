@@ -202,7 +202,7 @@ export default function FullQuestionnaire({
         )}
 
         <div className="mt-3 text-xs text-white/55">
-          MVP assumes natural gas only. If you heat with electric or other fuels, you can leave this unknown for now.
+          We're assuming gas heating. If you heat with electric or other fuels, you can leave this unknown for now.
         </div>
       </Section>
 
@@ -238,7 +238,7 @@ export default function FullQuestionnaire({
               type="number"
               min={0}
               value={veh.mpg ?? ""}
-              placeholder="Leave blank"
+              placeholder="optional"
               onChange={(e) => {
                 const v = e.target.value;
                 if (v.trim() === "") {

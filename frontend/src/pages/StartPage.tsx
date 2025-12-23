@@ -37,18 +37,18 @@ export default function StartPage() {
           <ModeCard
             selected={mode === "quick"}
             title="Quick Estimate"
-            time="2–3 minutes"
+            time="Less than 1 minute"
             bullets={[
               "Uses national averages when data is missing",
               "Best for demos and quick insight",
-              "Still returns warnings for assumptions",
+              "See where we made assumptions",
             ]}
             onClick={() => setMode("quick")}
           />
           <ModeCard
             selected={mode === "full"}
             title="Full Questionnaire"
-            time="8–12 minutes"
+            time="2-5 minutes"
             bullets={[
               "More detailed energy and travel inputs",
               "More accurate category breakdown",
