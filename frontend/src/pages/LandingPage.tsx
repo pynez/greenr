@@ -8,8 +8,8 @@ export default function LandingPage() {
           Understand your footprint in minutes.
         </h1>
         <p className="mt-4 text-white/70 max-w-2xl">
-          Greenr estimates your annual carbon footprint and shows the biggest levers to reduce it.
-          Built with transparent assumptions and clear warnings when averages are used.
+          Greenr estimates your annual carbon footprint and helps you take meaningful steps to reduce it.
+          Run multiple calculations and track your impact over time.
         </p>
 
         <div className="mt-6 flex gap-3">
@@ -20,20 +20,20 @@ export default function LandingPage() {
             Calculate now
           </Link>
           <a
-            href="http://127.0.0.1:8000/docs"
+            href="https://github.com/pynez/greenr"
             target="_blank"
             rel="noreferrer"
             className="rounded-xl border border-white/15 px-4 py-2 text-sm text-white/80 hover:text-white"
           >
-            View API docs
+            Learn more
           </a>
         </div>
       </section>
 
       <section className="grid md:grid-cols-3 gap-4">
-        <Card title="Quick Estimate" body="2–3 minutes. Great for a fast snapshot." />
-        <Card title="Full Questionnaire" body="8–12 minutes. More accurate inputs and breakdowns." />
-        <Card title="Transparent Methodology" body="Warnings explain what we assumed and why." />
+        <Card title="Quick Estimate" body="The fastest way to estimate your footprint." />
+        <Card title="Full Questionnaire" body="Fine-tune your calculation with more accurate inputs and breakdowns." />
+        <Card title="History & Insights" body="Get in-depth information on how we calculated your footprint and track your habits over time." />
       </section>
     </div>
   );

@@ -21,7 +21,15 @@ export default function Layout() {
       </main>
 
       <footer className="mx-auto max-w-5xl px-6 py-10 text-xs text-white/50">
-        Greenr estimates carbon footprint based on data from the US EPA and other sources. See our GitHub for details.
+        Greenr estimates carbon footprint based on data from the US EPA and other sources. See{" "}
+        <a
+          href="https://github.com/pynez/greenr"
+          className="underline"
+          style={{ color: "var(--accent)" }}
+        >
+          our GitHub
+        </a>{" "}
+        for details.
       </footer>
     </div>
   );
