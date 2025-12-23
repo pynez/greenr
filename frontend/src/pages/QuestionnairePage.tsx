@@ -72,53 +72,6 @@ export default function QuestionnairePage() {
     }
   };
 
-  const setHousehold = (n: number) => {
-    const clamped = Math.max(1, Math.min(20, n));
-    setDraft((d) => ({ ...d, household_size: clamped }));
-  };
-
-  const setRenewables = (fraction: number) => {
-    const f = Math.max(0, Math.min(1, fraction));
-    setDraft((d) => ({
-      ...d,
-      electricity: { ...(d.electricity ?? {}), renewable_fraction: f },
-    }));
-  };
-
-  const setDiet = (diet: DietType) => setDraft((d) => ({ ...d, diet }));
-  const setConsumption = (consumption: ConsumptionLevel) => setDraft((d) => ({ ...d, consumption }));
-
-  const toggleWaste = (key: "recycles_regularly" | "composts") => {
-    setDraft((d) => ({
-      ...d,
-      waste: { ...(d.waste ?? {}), [key]: !(d.waste?.[key] ?? false) },
-    }));
-  };
-
-  const onDrivingChange = (level: DrivingLevel) => {
-    setDriving(level);
-    setDraft((d) => ({
-      ...d,
-      vehicle: { ...(d.vehicle ?? {}), annual_miles: drivingLevelToMiles(level) },
-    }));
-  };
-
-  const onFlightsChange = (bucket: "0" | "1-2" | "3-5" | "6+") => {
-    setFlightsBucket(bucket);
-    const { short, medium, long } = flightsBucketToCounts(bucket);
-    setDraft((d) => ({
-      ...d,
-      flights: {
-        ...(d.flights ?? {}),
-        short_haul_count: short,
-        medium_haul_count: medium,
-        long_haul_count: long,
-      },
-    }));
-  };
-
-  const renewablePct = Math.round((draft.electricity?.renewable_fraction ?? 0) * 100);
-
   return (
     <div className="space-y-6">
       <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
