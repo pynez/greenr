@@ -30,8 +30,8 @@ Greenr estimates your annual carbon footprint and shows how you can take action 
 
 ```text
 greenr/
-├── client/          # Frontend (React + Vite)
-├── server/          # Backend (FastAPI)
+├── backend/          # Frontend (React + Vite)
+├── frontend/          # Backend (FastAPI)
 └── README.md
 ```
 
