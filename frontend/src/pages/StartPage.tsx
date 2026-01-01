@@ -58,7 +58,7 @@ export default function StartPage() {
           />
         </div>
 
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="text-sm text-white/70">Household size</label>
           <input
             type="number"
@@ -66,12 +66,12 @@ export default function StartPage() {
             max={20}
             value={household}
             onChange={(e) => setHousehold(Math.max(1, Math.min(20, Number(e.target.value))))}
-            className="w-24 rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-sm"
+            className="w-full sm:w-24 rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-sm"
           />
 
           <button
             onClick={start}
-            className="ml-auto rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-white/90"
+            className="sm:ml-auto rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-white/90 w-full sm:w-auto text-center"
           >
             Continue
           </button>
