@@ -10,7 +10,7 @@ Greenr estimates your annual carbon footprint and shows how you can take action 
 - Calculation history tracking
 - Clean, modern UI
 
-## [Get started with the Greenr webapp here.](trygreenr.vercel.app)
+## [Get started with the Greenr webapp here.](https://www.trygreenr.vercel.app)
 
 Developers, see below to setup Greenr locally on your machine.
 
