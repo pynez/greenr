@@ -2,7 +2,7 @@
 
 Greenr estimates your annual carbon footprint and shows how you can take action to reduce it. Take multiple calculations and see your Greenr history.
 
-## 🚀 Features
+## Features
 
 - Annual carbon footprint estimation
 - Category breakdowns to highlight major emission sources
@@ -10,7 +10,11 @@ Greenr estimates your annual carbon footprint and shows how you can take action 
 - Calculation history tracking
 - Clean, modern UI
 
-## 🛠️ Tech Stack
+## [Get started with the Greenr webapp here.](trygreenr.vercel.app)
+
+Developers, see below to setup Greenr locally on your machine.
+
+## Tech Stack
 
 ### Frontend
 - React
@@ -26,7 +30,7 @@ Greenr estimates your annual carbon footprint and shows how you can take action 
 - Vercel (frontend)
 - Fly.io (backend)
 
-## 📦 Project Structure
+## Project Structure
 
 ```text
 greenr/
@@ -35,7 +39,7 @@ greenr/
 └── README.md
 ```
 
-## 🧮 How It Works
+## How It Works
 
 1. Answer a short set of questions about your lifestyle.
 2. Greenr estimates annual CO₂ emissions using averages and public emissions factors.
@@ -44,7 +48,7 @@ greenr/
 
 Greenr prioritizes accessibility and clarity over perfect precision. Results are estimates meant to guide better decisions.
 
-## 🖥️ Local Development
+## Local Development
 
 ### Prerequisites
 - Node.js (v18+ recommended)
@@ -70,12 +74,12 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-## 🌍 Live Demo
+## Live Demo
 
 - Website: https://trygreenr.vercel.app
 - Learn more: https://pyne.dev/
 
-## 🎯 Roadmap
+## Roadmap
 
 - User accounts & authentication
 - Improved data visualizations
@@ -83,7 +87,7 @@ uvicorn main:app --reload
 - Personalized reduction plans
 - Mobile-first refinements
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
