@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f6fd6"/>
+      <stop offset="55%" stop-color="#7f6cc9"/>
+      <stop offset="100%" stop-color="#d08aa0"/>
+    </linearGradient>
+    <linearGradient id="mountain" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff8d52"/>
+      <stop offset="100%" stop-color="#7b2d1d"/>
+    </linearGradient>
+    <clipPath id="rounded">
+      <rect width="256" height="256" rx="56"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded)">
+    <rect width="256" height="256" fill="url(#sky)"/>
+    <path
+      d="M0 190
+         L45 145
+         L72 165
+         L110 95
+         L138 135
+         L170 115
+         L205 160
+         L256 130
+         L256 256
+         L0 256 Z"
+      fill="url(#mountain)"
+      opacity="0.95"
+    />
+    <path
+      d="M0 210
+         C60 180, 120 220, 256 185
+         L256 256
+         L0 256 Z"
+      fill="#1a1320"
+      opacity="0.85"
+    />
+    <text
+      x="128"
+      y="165"
+      text-anchor="middle"
+      font-size="132"
+      font-family="Inter, Arial, Helvetica, sans-serif"
+      font-weight="900"
+      fill="white"
+      letter-spacing="-6"
+    >G</text>
+  </g>
+</svg>

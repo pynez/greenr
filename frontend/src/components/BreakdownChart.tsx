@@ -8,60 +8,47 @@ import {
   CartesianGrid,
 } from "recharts";
 
-type Item = {
-  name: string;
-  kg: number;
-};
+type Item = { name: string; kg: number };
 
-function formatKg(n: number): string {
-  const rounded = Math.round(n);
-  return `${rounded.toLocaleString()} kg`;
+function formatKg(n: number) {
+  return `${Math.round(n).toLocaleString()} kg`;
 }
-
-function formatPercent(part: number, total: number): string {
+function formatPct(part: number, total: number) {
   if (total <= 0) return "0%";
   return `${Math.round((part / total) * 100)}%`;
 }
-
-function toNumber(value: number | string | (number | string)[] | undefined): number {
-  if (Array.isArray(value)) {
-    const first = value[0];
-    return typeof first === "number" ? first : Number(first ?? 0);
-  }
-
-  return typeof value === "number" ? value : Number(value ?? 0);
+function toNum(v: number | string | (number | string)[] | undefined): number {
+  if (Array.isArray(v)) return typeof v[0] === "number" ? v[0] : Number(v[0] ?? 0);
+  return typeof v === "number" ? v : Number(v ?? 0);
 }
 
-type BreakdownTooltipProps = {
-  active?: boolean;
-  payload?: { value?: number | string }[];
-  label?: string | number;
-  totalKg: number;
-};
-
-function BreakdownTooltip({
+function WarmTooltip({
   active,
   payload,
   label,
   totalKg,
-}: BreakdownTooltipProps) {
-  if (!active || !payload || payload.length === 0) return null;
-
-  const value = toNumber(payload[0].value);
-
+}: {
+  active?: boolean;
+  payload?: { value?: number | string }[];
+  label?: string | number;
+  totalKg: number;
+}) {
+  if (!active || !payload?.length) return null;
+  const value = toNum(payload[0].value);
   return (
     <div
       style={{
-        background: "rgba(0,0,0,0.85)",
-        border: "1px solid rgba(255,255,255,0.15)",
-        borderRadius: 12,
-        color: "white",
-        padding: "8px 10px",
+        background: "#EDE7DC",
+        border: "1px solid #D6CFC4",
+        padding: "8px 12px",
+        color: "#1A1208",
+        fontSize: 13,
       }}
     >
-      <div style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>{label}</div>
-      <div style={{ marginTop: 4 }}>
-        {formatKg(value)} <span style={{ color: "rgba(255,255,255,0.7)" }}>({formatPercent(value, totalKg)})</span>
+      <div style={{ fontWeight: 700 }}>{label}</div>
+      <div style={{ marginTop: 3, color: "#7A6652" }}>
+        {formatKg(value)}{" "}
+        <span style={{ color: "#2D5A1B" }}>({formatPct(value, totalKg)})</span>
       </div>
     </div>
   );
@@ -77,33 +64,33 @@ export default function BreakdownChart({
   const data = [...items].sort((a, b) => b.kg - a.kg);
 
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 p-6">
-      <div className="text-sm font-semibold">Breakdown</div>
-      <div className="mt-1 text-xs text-white/60">Annual emissions by category</div>
+    <div>
+      <div className="font-bold text-warm-dark text-sm">Breakdown</div>
+      <div className="mt-0.5 text-xs text-warm-mid">Annual emissions by category</div>
 
-      <div className="mt-4 h-72">
+      <div className="mt-6 h-72">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical" margin={{ left: 10, right: 10, top: 8, bottom: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+          <BarChart data={data} layout="vertical" margin={{ left: 10, right: 10, top: 4, bottom: 4 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#D6CFC4" horizontal={false} />
             <XAxis
               type="number"
-              tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }}
-              axisLine={{ stroke: "rgba(255,255,255,0.15)" }}
-              tickLine={{ stroke: "rgba(255,255,255,0.15)" }}
+              tick={{ fill: "#7A6652", fontSize: 11 }}
+              axisLine={{ stroke: "#D6CFC4" }}
+              tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
-              width={110}
-              tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12 }}
-              axisLine={{ stroke: "rgba(255,255,255,0.15)" }}
-              tickLine={{ stroke: "rgba(255,255,255,0.15)" }}
+              width={100}
+              tick={{ fill: "#1A1208", fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
             />
             <Tooltip
-                cursor={{ fill: "rgba(255,255,255,0.06)" }}
-                content={<BreakdownTooltip totalKg={totalKg} />}
+              cursor={{ fill: "rgba(214,207,196,0.3)" }}
+              content={<WarmTooltip totalKg={totalKg} />}
             />
-            <Bar dataKey="kg" radius={[10, 10, 10, 10]} />
+            <Bar dataKey="kg" fill="#2D5A1B" radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

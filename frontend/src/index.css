@@ -3,80 +3,142 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bg: #0b0d0c;
-    --bg-elevated: #121514;
-    --bg-glass: #0b0d0c80;
-
-    --border-subtle: #1f2422;
-    --border-strong: #2a2f2d;
-
-    --accent: #5cc763;
-    --accent-hover: #6edb75;
-    --accent-muted: #5cc76326;
-
-    --text-primary: #f4f7f5;
-    --text-secondary: #a6aca9;
-    --text-muted: #6f7672;
-    --text-inverse: #0b0d0c;
-
-    --interactive-hover: #ffffff0f;
-    --interactive-active: #ffffff1a;
-    --interactive-disabled: #ffffff40;
-
-    --success: #5cc763;
-    --warning: #e6b65c;
-    --error: #e05a5a;
-
-    --chart-primary: #5cc763;
-    --chart-secondary: #4aae53;
-    --chart-tertiary: #3a8f44;
-    --chart-grid: #1e2321;
+  *, *::before, *::after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
   }
 
   body {
-    background-color: var(--bg);
-    color: var(--text-primary);
+    background-color: #F5F0E8;
+    color: #1A1208;
+    font-family: "DM Sans", system-ui, sans-serif;
+    margin: 0;
+  }
+
+  input[type="range"] {
+    accent-color: #2D5A1B;
+  }
+
+  input[type="checkbox"] {
+    accent-color: #2D5A1B;
+  }
+}
+
+@layer components {
+  /* Animated underline button — primary use case for all CTAs */
+  .btn-underline {
+    position: relative;
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    color: #1A1208;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .btn-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: #2D5A1B;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease-out;
+  }
+  /* Hover — only on devices that support fine pointer (mouse) */
+  @media (hover: hover) and (pointer: fine) {
+    .btn-underline:hover {
+      color: #2D5A1B;
+    }
+    .btn-underline:hover::after {
+      transform: scaleX(1);
+    }
+  }
+  /* Touch tap — show underline on press, persist ~300ms on release */
+  @media (hover: none) {
+    .btn-underline {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-underline:active::after {
+      transform: scaleX(1);
+      transition: transform 0.1s ease-out;
+    }
+    .btn-underline:not(:active)::after {
+      transition: transform 0.2s ease-out 0.3s;
+    }
+  }
+  .btn-underline:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Variant for use on dark (forest) backgrounds */
+  .btn-underline-light {
+    position: relative;
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+  .btn-underline-light::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: white;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease-out;
+  }
+  .btn-underline-light:hover {
+    opacity: 0.75;
+  }
+  .btn-underline-light:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Minimal select — bottom border only, no surrounding box */
+  .select-minimal {
+    border: none;
+    border-bottom: 1px solid #D6CFC4;
+    border-radius: 0;
+    background: transparent;
+    padding: 0.5rem 1.5rem 0.5rem 0;
+    outline: none;
+    color: #1A1208;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 0.875rem;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    -webkit-appearance: auto;
+    appearance: auto;
+  }
+  .select-minimal:focus {
+    border-bottom-color: #2D5A1B;
+    outline: none;
   }
 }
 
 @layer utilities {
-  /* Surfaces */
-  .bg-black { background-color: var(--bg) !important; }
-  .bg-black\/30,
-  .bg-black\/40 { background-color: var(--bg-glass) !important; }
-  .bg-white\/5 { background-color: var(--bg-elevated) !important; }
-  .bg-white\/10 { background-color: var(--bg-glass) !important; }
-  .bg-white\/15,
-  .bg-white\/20,
-  .bg-white\/30 { background-color: var(--accent-muted) !important; }
-  .bg-white { background-color: var(--accent) !important; color: var(--text-inverse) !important; }
-  .bg-white\/80,
-  .bg-white\/90 { background-color: var(--accent-hover) !important; color: var(--text-inverse) !important; }
-  .hover\:bg-white\/90:hover { background-color: var(--accent-hover) !important; }
-
-  /* Borders */
-  .border-white\/10,
-  .border-white\/15 { border-color: var(--border-subtle) !important; }
-  .border-white\/20,
-  .border-white\/30 { border-color: var(--border-strong) !important; }
-  .hover\:border-white\/20:hover { border-color: var(--border-strong) !important; }
-  .border-white { border-color: var(--border-strong) !important; }
-
-  /* Text */
-  .text-white,
-  .text-white\/90 { color: var(--text-primary) !important; }
-  .text-white\/80,
-  .text-white\/70 { color: var(--text-secondary) !important; }
-  .text-white\/60,
-  .text-white\/55,
-  .text-white\/50 { color: var(--text-muted) !important; }
-  .text-white\/40 { color: var(--interactive-disabled) !important; }
-  .text-black { color: var(--text-inverse) !important; }
-  .text-green-200 { color: var(--success) !important; }
-  .text-red-200,
-  .text-red-300 { color: var(--error) !important; }
-
-  /* Form placeholders */
-  .placeholder\:text-white\/40::placeholder { color: var(--text-muted) !important; opacity: 1; }
+  .font-extrabold {
+    font-weight: 800;
+  }
 }
