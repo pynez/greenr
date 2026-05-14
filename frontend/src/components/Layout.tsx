@@ -1,72 +1,76 @@
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-import logo from "../assets/greenr-logo-clean.png";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import MobileNav from "./MobileNav";
+
+const NAV_LINKS = [
+  { to: "/start", label: "Calculate" },
+  { to: "/history", label: "History" },
+  { to: "/insights", label: "Insights" },
+];
 
 export default function Layout() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const links = [
-    { to: "/start", label: "Calculate" },
-    { to: "/history", label: "History" },
-    { to: "/insights", label: "Insights" },
-  ];
+  const location = useLocation();
+  const isHero = location.pathname === "/";
+  const isQuestionnaire = location.pathname === "/questions";
+
+  // Hero: full-screen with mobile nav (light icon over dark photo)
+  if (isHero) {
+    return (
+      <>
+        <MobileNav lightIcon />
+        <Outlet />
+      </>
+    );
+  }
+
+  // Questionnaire: full-screen bg, no nav chrome (questionnaire renders its own)
+  if (isQuestionnaire) {
+    return (
+      <div className="min-h-screen bg-cream">
+        <Outlet />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
-        <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="text-lg font-semibold tracking-tight flex items-center gap-2">
-            <img src={logo} alt="Greenr" className="h-8 w-8 rounded-xl" />
-            <span>Greenr</span>
-          </Link>
+    <div className="min-h-screen bg-cream text-warm-dark">
+      <MobileNav />
 
-          <nav className="hidden md:flex gap-4 text-sm text-white/70">
-            {links.map((link) => (
-              <Link key={link.to} to={link.to} className="hover:text-white">
+      <header
+        className="bg-cream sticky top-0 z-40"
+        style={{ borderBottom: "1px solid #D6CFC4" }}
+      >
+        <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="text-forest font-extrabold text-xl tracking-tight">
+            Greenr
+          </Link>
+          {/* Desktop nav only — hidden on mobile */}
+          <nav className="hidden md:flex gap-8">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.to} to={link.to} className="btn-underline text-sm">
                 {link.label}
               </Link>
             ))}
           </nav>
-
-          <button
-            type="button"
-            className="md:hidden rounded-lg border border-white/15 px-3 py-2 text-sm text-white/80 hover:text-white"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            {menuOpen ? "Close" : "Menu"}
-          </button>
         </div>
-
-        {menuOpen ? (
-          <div className="md:hidden mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
-            <div className="flex flex-col gap-3 text-sm text-white/80">
-              {links.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="hover:text-white"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 pb-16">
+      <main className="mx-auto max-w-5xl px-6 py-10 pb-20">
         <Outlet />
       </main>
 
-      <footer className="mx-auto max-w-5xl px-4 sm:px-6 py-10 text-xs text-white/50">
-        Greenr estimates carbon footprint based on data from the US EPA and other sources. See{" "}
+      <footer
+        className="mx-auto max-w-5xl px-6 py-8 text-xs text-warm-mid"
+        style={{ borderTop: "1px solid #D6CFC4" }}
+      >
+        Greenr estimates carbon footprint based on data from the US EPA and other sources.{" "}
         <a
           href="https://github.com/pynez/greenr"
-          className="underline"
-          style={{ color: "var(--accent)" }}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-underline text-xs"
+          style={{ color: "#2D5A1B" }}
         >
-          our GitHub
+          See our GitHub
         </a>{" "}
         for details.
       </footer>

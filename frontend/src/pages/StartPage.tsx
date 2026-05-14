@@ -7,37 +7,36 @@ export default function StartPage() {
   const nav = useNavigate();
   const initial = useMemo(() => loadSession(), []);
   const [mode, setMode] = useState<Mode>(initial.mode ?? "quick");
-  const [household, setHousehold] = useState<number>(initial.requestDraft.household_size ?? 1);
 
   const start = () => {
     const s = loadSession();
-    const next = {
+    saveSession({
       ...s,
       mode,
-      requestDraft: {
-        ...s.requestDraft,
-        mode,
-        household_size: household,
-      },
+      requestDraft: { ...s.requestDraft, mode },
       lastResult: null,
-    };
-    saveSession(next);
+    });
     nav("/questions");
   };
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
-        <h1 className="text-2xl font-semibold">Choose your questionnaire</h1>
-        <p className="mt-2 text-white/70">
-          Quick is fastest. Full is more accurate. You can still get results either way.
+    <div style={{ paddingTop: "80px", paddingBottom: "80px", paddingLeft: "1rem", paddingRight: "1rem" }}>
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-warm-dark">
+          How would you like to calculate?
+        </h1>
+        <p className="mt-3 text-warm-mid text-base">
+          Quick is fastest. Full is more accurate.
         </p>
+      </div>
 
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <ModeCard
+      {/* Mode selector: stacked on mobile, side-by-side on desktop */}
+      <div className="mt-16 max-w-2xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-0 items-stretch">
+          <ModeColumn
             selected={mode === "quick"}
             title="Quick Estimate"
-            time="Less than 1 minute"
+            time="Less than 1 min"
             bullets={[
               "Uses national averages when data is missing",
               "Best for demos and quick insight",
@@ -45,10 +44,15 @@ export default function StartPage() {
             ]}
             onClick={() => setMode("quick")}
           />
-          <ModeCard
+          {/* Horizontal rule on mobile only — vertical spacer removed */}
+          <div
+            className="block md:hidden"
+            style={{ height: 1, background: "#D6CFC4", margin: "1.5rem 0" }}
+          />
+          <ModeColumn
             selected={mode === "full"}
             title="Full Questionnaire"
-            time="2-5 minutes"
+            time="2–5 minutes"
             bullets={[
               "More detailed energy and travel inputs",
               "More accurate category breakdown",
@@ -57,31 +61,22 @@ export default function StartPage() {
             onClick={() => setMode("full")}
           />
         </div>
+      </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
-          <label className="text-sm text-white/70">Household size</label>
-          <input
-            type="number"
-            min={1}
-            max={20}
-            value={household}
-            onChange={(e) => setHousehold(Math.max(1, Math.min(20, Number(e.target.value))))}
-            className="w-full sm:w-24 rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-sm"
-          />
-
-          <button
-            onClick={start}
-            className="sm:ml-auto rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-white/90 w-full sm:w-auto text-center"
-          >
-            Continue
-          </button>
-        </div>
+      {/* Continue */}
+      <div
+        className="mt-16 max-w-2xl mx-auto flex justify-end"
+        style={{ borderTop: "1px solid #D6CFC4", paddingTop: "2rem" }}
+      >
+        <button onClick={start} className="btn-underline" style={{ color: "#2D5A1B", fontSize: "1rem" }}>
+          Continue →
+        </button>
       </div>
     </div>
   );
 }
 
-function ModeCard({
+function ModeColumn({
   selected,
   title,
   time,
@@ -97,22 +92,43 @@ function ModeCard({
   return (
     <button
       onClick={onClick}
-      className={[
-        "text-left rounded-2xl p-6 border transition",
-        selected
-          ? "bg-white/10 border-white/30"
-          : "bg-white/5 border-white/10 hover:border-white/20",
-      ].join(" ")}
+      className="flex-1 text-left pb-8 pr-0 md:pr-8"
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        minHeight: 48,
+      }}
     >
-      <div className="flex items-center justify-between">
-        <div className="text-lg font-semibold">{title}</div>
-        <div className="text-xs text-white/60">{time}</div>
+      <div className="flex items-baseline justify-between gap-3 mb-3">
+        <span
+          className="font-bold text-lg leading-snug"
+          style={{
+            color: selected ? "#2D5A1B" : "#1A1208",
+            transition: "color 0.15s ease",
+            borderBottom: selected ? "1.5px solid #2D5A1B" : "1.5px solid transparent",
+            paddingBottom: "2px",
+          }}
+        >
+          {title}
+        </span>
+        <span className="text-xs text-warm-mid font-medium whitespace-nowrap">{time}</span>
       </div>
-      <ul className="mt-3 space-y-1 text-sm text-white/70 list-disc pl-5">
+      <div style={{ paddingLeft: 0 }}>
         {bullets.map((b) => (
-          <li key={b}>{b}</li>
+          <div
+            key={b}
+            className="text-sm leading-relaxed"
+            style={{
+              color: selected ? "#7A6652" : "#A89880",
+              marginBottom: "0.5rem",
+              transition: "color 0.15s ease",
+            }}
+          >
+            {b}
+          </div>
         ))}
-      </ul>
+      </div>
     </button>
   );
 }

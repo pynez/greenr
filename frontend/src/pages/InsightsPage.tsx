@@ -8,11 +8,24 @@ import {
   getSnapshot,
   type Snapshot,
 } from "../state/session";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Cell,
+} from "recharts";
 
 type CatKey = "electricity" | "heating" | "vehicle" | "flights" | "diet" | "consumption";
 
-const CATS: { key: CatKey; name: string; field: keyof Snapshot["response"]["breakdown"] }[] = [
+const CATS: {
+  key: CatKey;
+  name: string;
+  field: keyof Snapshot["response"]["breakdown"];
+}[] = [
   { key: "electricity", name: "Electricity", field: "electricity_kg" },
   { key: "heating", name: "Heating", field: "heating_kg" },
   { key: "vehicle", name: "Vehicle", field: "vehicle_kg" },
@@ -21,15 +34,12 @@ const CATS: { key: CatKey; name: string; field: keyof Snapshot["response"]["brea
   { key: "consumption", name: "Consumption", field: "consumption_kg" },
 ];
 
-function formatTons(n: number) {
+function fmt(n: number) {
   return `${n.toFixed(2)} tCO2e`;
 }
-
-function formatSignedTons(n: number) {
-  const sign = n > 0 ? "+" : "";
-  return `${sign}${n.toFixed(2)} tCO2e`;
+function fmtSigned(n: number) {
+  return `${n > 0 ? "+" : ""}${n.toFixed(2)} tCO2e`;
 }
-
 function pct(delta: number, base: number) {
   if (base <= 0) return 0;
   return Math.round((delta / base) * 100);
@@ -37,24 +47,23 @@ function pct(delta: number, base: number) {
 
 export default function InsightsPage() {
   const session = useMemo(() => loadSession(), []);
-  const snapshots = session.snapshots;
+  const { snapshots } = session;
 
   const baseline = getSnapshot(session, session.baselineId);
   const scenario = getSnapshot(session, session.scenarioId);
 
   if (snapshots.length === 0) {
     return (
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-8">
-        <div className="text-lg font-semibold">No saved calculations yet</div>
-        <p className="mt-2 text-white/70">
+      <div style={{ paddingTop: "80px", paddingBottom: "80px" }} className="text-center">
+        <div className="text-lg font-bold text-warm-dark">No saved calculations yet</div>
+        <p className="mt-3 text-warm-mid">
           Run a calculation first, then create a scenario to compare.
         </p>
-        <Link
-          to="/start"
-          className="inline-block mt-4 rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-white/90"
-        >
-          Start
-        </Link>
+        <div className="mt-8">
+          <Link to="/start" className="btn-underline" style={{ color: "#2D5A1B" }}>
+            Start
+          </Link>
+        </div>
       </div>
     );
   }
@@ -70,7 +79,6 @@ export default function InsightsPage() {
   const setBaselineId = (id: string) => {
     const s = loadSession();
     const next = { ...s, baselineId: id };
-    // if scenario equals baseline, clear scenario
     if (next.scenarioId === id) next.scenarioId = null;
     saveSession(next);
     window.location.reload();
@@ -78,8 +86,7 @@ export default function InsightsPage() {
 
   const setScenarioId = (id: string | null) => {
     const s = loadSession();
-    const next = { ...s, scenarioId: id };
-    saveSession(next);
+    saveSession({ ...s, scenarioId: id });
     window.location.reload();
   };
 
@@ -93,98 +100,109 @@ export default function InsightsPage() {
       : [];
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-8 backdrop-blur-xl">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold">Insights</h1>
-            <p className="mt-2 text-white/70">
-              Compare two calculations to see what changed and what matters most.
-            </p>
-          </div>
-          <Link to="/results" className="text-sm text-white/70 hover:text-white">
-            Back to results
-          </Link>
-        </div>
-
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <Picker
-            title="Baseline"
-            valueId={base?.id ?? ""}
-            snapshots={snapshots}
-            onChange={(id) => setBaselineId(id)}
-          />
-          <Picker
-            title="Scenario"
-            valueId={scen?.id ?? ""}
-            snapshots={snapshots}
-            allowNone
-            onChange={(id) => setScenarioId(id)}
-          />
-        </div>
-
-        {base && scen ? (
-          <div className="mt-6 rounded-2xl bg-black/30 border border-white/10 p-6">
-            <div className="text-sm text-white/60">Change in total footprint</div>
-            <div className="mt-2 flex items-baseline gap-3 flex-wrap">
-              <div className="text-4xl font-semibold tracking-tight">
-                {formatSignedTons(deltaT)}
-              </div>
-              <div className="text-sm text-white/60">
-                ({deltaPct > 0 ? "+" : ""}{deltaPct}%)
-              </div>
-            </div>
-
-            <div className="mt-4 grid md:grid-cols-2 gap-3 text-sm">
-              <Mini label="Baseline" value={`${base.label} • ${formatTons(baseTotal)}`} />
-              <Mini label="Scenario" value={`${scen.label} • ${formatTons(scenTotal)}`} />
-            </div>
-          </div>
-        ) : (
-          <div className="mt-6 rounded-2xl bg-black/30 border border-white/10 p-6 text-sm text-white/70">
-            Select a baseline and a scenario to see the comparison.
-          </div>
-        )}
+    <div>
+      <div style={{ paddingBottom: "2rem", borderBottom: "1px solid #D6CFC4" }}>
+        <h1 className="text-3xl font-bold text-warm-dark">compare your scenarios</h1>
+        <p className="mt-2 text-warm-mid text-sm">
+          Select a baseline and a scenario to see what changed.
+        </p>
       </div>
+
+      {/* Pickers */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
+        <Picker
+          title="Baseline"
+          valueId={base?.id ?? ""}
+          snapshots={snapshots}
+          onChange={setBaselineId}
+        />
+        <Picker
+          title="Scenario"
+          valueId={scen?.id ?? ""}
+          snapshots={snapshots}
+          allowNone
+          onChange={setScenarioId}
+        />
+      </div>
+
+      {/* Delta display */}
+      {base && scen ? (
+        <div style={{ marginTop: "80px", paddingBottom: "2rem", borderBottom: "1px solid #D6CFC4" }}>
+          <div className="text-xs text-warm-mid font-medium mb-3">Change in total footprint</div>
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <span
+              className="font-extrabold leading-none"
+              style={{
+                fontSize: "3.5rem",
+                color: deltaT > 0 ? "#C4622D" : deltaT < 0 ? "#2D5A1B" : "#1A1208",
+              }}
+            >
+              {fmtSigned(deltaT)}
+            </span>
+            <span className="text-warm-mid text-sm font-medium">
+              ({deltaPct > 0 ? "+" : ""}
+              {deltaPct}%)
+            </span>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-8 text-sm">
+            <div>
+              <span className="text-warm-mid">Baseline: </span>
+              <span className="font-bold text-warm-dark">{base.label} · {fmt(baseTotal)}</span>
+            </div>
+            <div>
+              <span className="text-warm-mid">Scenario: </span>
+              <span className="font-bold text-warm-dark">{scen.label} · {fmt(scenTotal)}</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-10 text-sm text-warm-mid">
+          Select a baseline and a scenario above to see the comparison.
+        </div>
+      )}
 
       {base && scen && (
-    <div className="space-y-6">
-      <ImpactEquivalentsCard baseline={base} scenario={scen} />
+        <div className="space-y-0" style={{ marginTop: "80px" }}>
+          <ImpactEquivalentsCard baseline={base} scenario={scen} />
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <BreakdownChart
-          totalKg={Math.max(1, base.response.breakdown.total_kg)}
-          items={CATS.map((c) => ({
-            name: c.name,
-            kg: base.response.breakdown[c.field] as number,
-          }))}
-        />
+          <div className="grid lg:grid-cols-2 gap-16" style={{ marginTop: "80px" }}>
+            <BreakdownChart
+              totalKg={Math.max(1, base.response.breakdown.total_kg)}
+              items={CATS.map((c) => ({
+                name: c.name,
+                kg: base.response.breakdown[c.field] as number,
+              }))}
+            />
 
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-6">
-          <div className="text-sm font-semibold">Category deltas</div>
-          <div className="mt-1 text-xs text-white/60">
-            Scenario minus baseline (kg CO2e/year)
-          </div>
+            {/* Category deltas */}
+            <div>
+              <div className="font-bold text-warm-dark text-sm">Category deltas</div>
+              <div className="mt-0.5 text-xs text-warm-mid mb-6">
+                Scenario minus baseline (kg CO2e/year)
+              </div>
 
-          <div className="mt-4 space-y-2">
-            {deltaByCat
-              .slice()
-              .sort((a, b) => Math.abs(b.kg) - Math.abs(a.kg))
-              .map((d) => (
-                <DeltaRow key={d.name} name={d.name} kg={d.kg} />
-              ))}
-          </div>
+              <div style={{ borderTop: "1px solid #D6CFC4" }}>
+                {deltaByCat
+                  .slice()
+                  .sort((a, b) => Math.abs(b.kg) - Math.abs(a.kg))
+                  .map((d) => (
+                    <DeltaRow key={d.name} name={d.name} kg={d.kg} />
+                  ))}
+              </div>
 
-          <div className="mt-5">
-            <DeltaChart items={deltaByCat} />
+              <div className="mt-8 h-60">
+                <DeltaChart items={deltaByCat} />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  )}
+      )}
     </div>
   );
 }
+
+// ─── Picker ───────────────────────────────────────────────────────────────────
 
 function Picker({
   title,
@@ -200,17 +218,22 @@ function Picker({
   allowNone?: boolean;
 }) {
   return (
-    <div className="rounded-2xl bg-black/30 border border-white/10 p-6">
-      <div className="text-sm font-semibold">{title}</div>
+    <div>
+      <div
+        className="text-xs font-medium text-warm-mid uppercase mb-3"
+        style={{ letterSpacing: "0.06em" }}
+      >
+        {title}
+      </div>
       <select
         value={valueId}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 w-full rounded-xl bg-black/40 border border-white/15 px-3 py-2 text-sm"
+        className="select-minimal"
       >
         {allowNone && <option value="">None</option>}
         {snapshots.map((s) => (
           <option key={s.id} value={s.id}>
-            {s.label} • {new Date(s.createdAt).toLocaleString()}
+            {s.label} · {new Date(s.createdAt).toLocaleDateString()}
           </option>
         ))}
       </select>
@@ -218,25 +241,26 @@ function Picker({
   );
 }
 
-function Mini({ label, value }: { label: string; value: string }) {
+// ─── Delta row ────────────────────────────────────────────────────────────────
+
+function DeltaRow({ name, kg }: { name: string; kg: number }) {
+  const sign = kg > 0 ? "+" : "";
+  const color = kg > 0 ? "#C4622D" : kg < 0 ? "#2D5A1B" : "#7A6652";
+  const arrow = kg > 0 ? "▲" : kg < 0 ? "▼" : "–";
   return (
-    <div className="rounded-xl bg-black/30 border border-white/10 p-4">
-      <div className="text-white/60 text-xs">{label}</div>
-      <div className="mt-1 text-white text-sm font-semibold">{value}</div>
+    <div
+      className="flex items-center justify-between py-3"
+      style={{ borderBottom: "1px solid #D6CFC4" }}
+    >
+      <span className="text-sm text-warm-dark font-medium">{name}</span>
+      <span className="text-sm font-bold" style={{ color }}>
+        {arrow} {sign}{Math.round(kg).toLocaleString()} kg
+      </span>
     </div>
   );
 }
 
-function DeltaRow({ name, kg }: { name: string; kg: number }) {
-  const sign = kg > 0 ? "+" : "";
-  const tone = kg > 0 ? "text-red-200" : kg < 0 ? "text-green-200" : "text-white/70";
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-xl bg-black/30 border border-white/10 p-3">
-      <div className="text-sm text-white/80">{name}</div>
-      <div className={`text-sm font-semibold ${tone}`}>{sign}{Math.round(kg).toLocaleString()} kg</div>
-    </div>
-  );
-}
+// ─── Delta chart ──────────────────────────────────────────────────────────────
 
 function DeltaChart({ items }: { items: { name: string; kg: number }[] }) {
   const data = items
@@ -244,37 +268,42 @@ function DeltaChart({ items }: { items: { name: string; kg: number }[] }) {
     .sort((a, b) => Math.abs(b.kg) - Math.abs(a.kg));
 
   return (
-    <div className="h-72">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ left: 10, right: 10, top: 8, bottom: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-          <XAxis
-            type="number"
-            tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }}
-            axisLine={{ stroke: "rgba(255,255,255,0.15)" }}
-            tickLine={{ stroke: "rgba(255,255,255,0.15)" }}
-          />
-          <YAxis
-            type="category"
-            dataKey="name"
-            width={110}
-            tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12 }}
-            axisLine={{ stroke: "rgba(255,255,255,0.15)" }}
-            tickLine={{ stroke: "rgba(255,255,255,0.15)" }}
-          />
-          <Tooltip
-            cursor={{ fill: "rgba(255,255,255,0.06)" }}
-            contentStyle={{
-              background: "rgba(0,0,0,0.85)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: 12,
-              color: "white",
-            }}
-            formatter={(value) => `${Number(value).toLocaleString()} kg`}
-          />
-          <Bar dataKey="kg" radius={[10, 10, 10, 10]} />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={data} layout="vertical" margin={{ left: 10, right: 10, top: 4, bottom: 4 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#D6CFC4" horizontal={false} />
+        <XAxis
+          type="number"
+          tick={{ fill: "#7A6652", fontSize: 11 }}
+          axisLine={{ stroke: "#D6CFC4" }}
+          tickLine={false}
+        />
+        <YAxis
+          type="category"
+          dataKey="name"
+          width={100}
+          tick={{ fill: "#1A1208", fontSize: 12 }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <Tooltip
+          cursor={{ fill: "rgba(214,207,196,0.3)" }}
+          contentStyle={{
+            background: "#EDE7DC",
+            border: "1px solid #D6CFC4",
+            color: "#1A1208",
+            fontSize: 13,
+          }}
+          formatter={(value) => [`${Number(value).toLocaleString()} kg`, "Delta"]}
+        />
+        <Bar dataKey="kg" radius={[0, 4, 4, 0]}>
+          {data.map((entry, index) => (
+            <Cell
+              key={index}
+              fill={entry.kg > 0 ? "#C4622D" : entry.kg < 0 ? "#2D5A1B" : "#D6CFC4"}
+            />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
   );
 }
