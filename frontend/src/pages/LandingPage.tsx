@@ -142,7 +142,7 @@ export default function LandingPage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: dur(0.5), ease: "easeOut" },
+      transition: { duration: dur(0.5), ease: "easeOut" as const },
     },
   };
 
