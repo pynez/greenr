@@ -7,19 +7,17 @@ const NAV_LINKS = [
   { to: "/insights", label: "Insights" },
 ];
 
+const KNOWN_ROUTES = ["/", "/start", "/questions", "/results", "/insights", "/scenario", "/history"];
+
 export default function Layout() {
   const location = useLocation();
   const isHero = location.pathname === "/";
   const isQuestionnaire = location.pathname === "/questions";
+  const isNotFound = !KNOWN_ROUTES.includes(location.pathname);
 
-  // Hero: full-screen with mobile nav (light icon over dark photo)
-  if (isHero) {
-    return (
-      <>
-        <MobileNav lightIcon />
-        <Outlet />
-      </>
-    );
+  // Hero & 404: full-screen photo backdrop, no header/footer chrome (each renders its own nav)
+  if (isHero || isNotFound) {
+    return <Outlet />;
   }
 
   // Questionnaire: full-screen bg, no nav chrome (questionnaire renders its own)
