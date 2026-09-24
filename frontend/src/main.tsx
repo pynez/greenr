@@ -11,6 +11,7 @@ import ResultsPage from "./pages/ResultsPage";
 import InsightsPage from "./pages/InsightsPage";
 import ScenarioBuilderPage from "./pages/ScenarioBuilderPage";
 import HistoryPage from "./pages/HistoryPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,8 @@ const router = createBrowserRouter([
       { path: "results", element: <ResultsPage /> },
       { path: "insights", element: <InsightsPage /> },
       { path: "scenario", element: <ScenarioBuilderPage /> },
-      { path: "history", element: <HistoryPage /> }
+      { path: "history", element: <HistoryPage /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

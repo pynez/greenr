@@ -14,6 +14,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://greenr.pyne.dev",
         "https://trygreenr.vercel.app",
         "https://greenr-alpha.vercel.app",
         "http://localhost:5173",
